@@ -815,33 +815,41 @@ h2.title span {
     </div>
   </div>
 
-  <!-- 12 CÓDIGO -->
+<!-- 12 CÓDIGO -->
   <div class="slide" id="s12">
     <div class="slide-num">12 / 19</div>
     <div class="tag">Software · Arduino</div>
     <h2 class="title">Lógica de <span>Controle</span></h2>
     <div class="divider"></div>
-    <div class="code-box" style="max-width:860px;">
-      <span class="cl">// Loop principal — leitura, controle e transmissão</span><br/>
+    <div class="code-box" style="max-width:960px;font-size:12.5px;line-height:1.9;">
+      <span class="cl">// Esta função roda em LOOP INFINITO enquanto o ESP32 estiver ligado</span><br/>
       <span class="kw">void</span> <span class="fn">loop</span>() {<br/>
+      <br/>
+      &nbsp;&nbsp;<span class="cl">// PASSO 1 - Lê a temperatura atual do sensor DS18B20</span><br/>
       &nbsp;&nbsp;<span class="va">float</span> temp = <span class="fn">lerTemperatura</span>();<br/>
       <br/>
-      &nbsp;&nbsp;<span class="cl">// Controle inteligente com histerese de ±0,5°C</span><br/>
-      &nbsp;&nbsp;<span class="kw">if</span> (temp &gt; metaTemp + <span class="nu">0.5</span>)<br/>
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">digitalWrite</span>(RELE, <span class="st">LOW</span>);&nbsp;&nbsp;<span class="cl">// desliga</span><br/>
-      &nbsp;&nbsp;<span class="kw">else if</span> (temp &lt; metaTemp - <span class="nu">0.5</span>)<br/>
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">digitalWrite</span>(RELE, <span class="st">HIGH</span>); <span class="cl">// liga</span><br/>
+      &nbsp;&nbsp;<span class="cl">// PASSO 2 - Decide se liga ou desliga o relé (histerese ±0,5°C)</span><br/>
+      &nbsp;&nbsp;<span class="cl">// A margem de 0,5°C evita que o relé fique oscilando sem parar</span><br/>
+      &nbsp;&nbsp;<span class="kw">if</span> (temp &gt; metaTemp + <span class="nu">0.5</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">// temp ACIMA da meta → resfria</span><br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">digitalWrite</span>(RELE, <span class="st">LOW</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">// LOW = DESLIGA o relé</span><br/>
+      &nbsp;&nbsp;<span class="kw">else if</span> (temp &lt; metaTemp - <span class="nu">0.5</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">// temp ABAIXO da meta → aquece</span><br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">digitalWrite</span>(RELE, <span class="st">HIGH</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">// HIGH = LIGA o relé</span><br/>
+      &nbsp;&nbsp;<span class="cl">// Se estiver dentro da margem: não faz nada → economiza energia</span><br/>
       <br/>
+      &nbsp;&nbsp;<span class="cl">// PASSO 3 - Atualiza o display LCD</span><br/>
+      &nbsp;&nbsp;<span class="cl">// Linha 1: temperatura atual | Linha 2: meta + status [ON/OFF]</span><br/>
       &nbsp;&nbsp;<span class="fn">atualizarLCD</span>(temp, metaTemp, releStatus);<br/>
       <br/>
+      &nbsp;&nbsp;<span class="cl">// PASSO 4 - A cada 10 segundos, envia dados ao Google Sheets via WiFi</span><br/>
+      &nbsp;&nbsp;<span class="cl">// millis() = tempo em ms desde que o ESP32 ligou. 10000ms = 10 segundos</span><br/>
       &nbsp;&nbsp;<span class="kw">if</span> (millis() - ultimoEnvio &gt; <span class="nu">10000</span>) {<br/>
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">enviarHTTPS</span>(temp, releStatus);<br/>
-      &nbsp;&nbsp;&nbsp;&nbsp;ultimoEnvio = <span class="fn">millis</span>();<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">enviarHTTPS</span>(temp, releStatus);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">// envia temperatura + status via HTTPS</span><br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;ultimoEnvio = <span class="fn">millis</span>();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">// reseta o contador de 10s</span><br/>
       &nbsp;&nbsp;}<br/>
+      &nbsp;&nbsp;<span class="cl">// Volta ao início - repete tudo de novo indefinidamente</span><br/>
       }
     </div>
   </div>
-
   <!-- 13 GOOGLE SHEETS -->
   <div class="slide" id="s13">
     <div class="slide-num">13 / 19</div>
