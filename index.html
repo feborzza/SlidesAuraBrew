@@ -809,8 +809,8 @@ h2.title span {
       <div class="card"><div class="icon">🎛️</div><h3>Botões Físicos</h3><p>Pinos 18 e 19 — ajuste manual da temperatura sem reprogramar.</p></div>
     </div>
     <div class="rules" style="max-width:860px;">
-      <div class="rule c">🔵 Temp &gt; meta + 0,5°C → Relé <strong>LIGA</strong> — resfria</div>
-      <div class="rule h">🔴 Temp &lt; meta − 0,5°C → Relé <strong>DESLIGA</strong> — aquece</div>
+      <div class="rule c">🔵 Temp &gt; meta + 0,5°C → Relé <strong>LIGA</strong> — aquece</div>
+      <div class="rule h">🔴 Temp &lt; meta − 0,5°C → Relé <strong>DESLIGA</strong> — resfria</div>
       <div class="rule i">📡 Dados enviados ao Google Sheets via HTTPS a cada <strong>10 segundos</strong></div>
     </div>
   </div>
@@ -830,9 +830,9 @@ h2.title span {
       <br/>
       &nbsp;&nbsp;<span class="cl">// PASSO 2 - Decide se liga ou desliga o relé (histerese ±0,5°C)</span><br/>
       &nbsp;&nbsp;<span class="cl">// A margem de 0,5°C evita que o relé fique oscilando sem parar</span><br/>
-      &nbsp;&nbsp;<span class="kw">if</span> (temp &gt; metaTemp + <span class="nu">0.5</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">// temp ACIMA da meta → resfria</span><br/>
+      &nbsp;&nbsp;<span class="kw">if</span> (temp &gt; metaTemp + <span class="nu">0.5</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">// temp ACIMA da meta → aquece</span><br/>
       &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">digitalWrite</span>(RELE, <span class="st">LOW</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">// LOW = DESLIGA o relé</span><br/>
-      &nbsp;&nbsp;<span class="kw">else if</span> (temp &lt; metaTemp - <span class="nu">0.5</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">// temp ABAIXO da meta → aquece</span><br/>
+      &nbsp;&nbsp;<span class="kw">else if</span> (temp &lt; metaTemp - <span class="nu">0.5</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">// temp ABAIXO da meta → resfria</span><br/>
       &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">digitalWrite</span>(RELE, <span class="st">HIGH</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cl">// HIGH = LIGA o relé</span><br/>
       &nbsp;&nbsp;<span class="cl">// Se estiver dentro da margem: não faz nada → economiza energia</span><br/>
       <br/>
